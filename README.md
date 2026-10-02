@@ -79,3 +79,29 @@ nRF52840 的 **S140 SoftDevice 原生支持多协议并发**：BLE 外设 + BLE 
 - **电流**：BLE+ANT 并发峰值电流约 15mA 量级，3.7V 锂电池余量充足；电池务必带保护板。
 - **可选：开启 ANT+ 踏频字段**：将 `PowerMeter::update()` 中的 `pwr->SetInstantCadence(0xFF)` 改为 `pwr->SetInstantCadence(instCAD)`（0xFF 表示关闭）。
 - 桥接服务转发的是**原始 11 字节 XDS 数据包**（总功率/左腿/右腿/角度/踏频/错误码），与 ESP32 版完全一致，兼容现有 App。
+
+## 8. 来源与许可（必读）
+
+本项目**整合**了多份第三方代码，版权归各自作者所有：
+
+| 文件 / 目录 | 来源 | 说明 |
+|---|---|---|
+| `src/ant_interface.h`、`src/ant_parameters.h`、`src/ant_event.h`、`src/ant_channel_config.*` | Nordic Semiconductor ANT SDK | Nordic 5-Clause / ANT 许可 |
+| `src/ANTProfile.*`、`src/sdant.*`、`src/PowerMeter/BicyclePower.*`、`src/util.h` | 第三方 ANT+ Arduino 项目（基于 Nordic SDK 改写） | 见原项目许可 |
+| `src/PowerMeter/PowerMeter.*`、`XDS_AllInOne.ino`、本文档 | 本项目作者 | **MIT**（见 [LICENSE](LICENSE)） |
+| Bluefruit52Lib 的 CCCD 补丁 | **不在本仓库**，仅在 [`SETUP_NOTES.md`](SETUP_NOTES.md) 中说明做法 | Adafruit 原许可 |
+
+> **ANT 协议许可**：ANT / ANT+ 协议仅允许**非商业个人用途**免费使用；
+> 任何商业用途均需向 <https://www.thisisant.com> 购买许可。
+
+## 9. 依赖的外部项目
+
+- **ANT 版 Arduino BSP**（提供 S340 软设备 + w.ANT 支持）：
+  [`1wpc/Adafruit_nRF52_Arduino_ANT`](https://github.com/1wpc/Adafruit_nRF52_Arduino_ANT)
+- **ESP32 参考实现（本项目得以定位关键 bug 的重要参照）**：
+  [`1wpc/xds_repeater`](https://github.com/1wpc/xds_repeater)
+- 底层库：Adafruit nRF52 Arduino BSP 1.7.0 / Bluefruit52Lib / TinyUSB
+
+> ⚠️ 仅 clone 本仓库**无法直接编译**：还需要按 [`SETUP_NOTES.md`](SETUP_NOTES.md)
+> 安装 ANT 版 BSP，并给 Bluefruit52Lib 打上 CCCD 补丁（这是"连上却收不到数据"的根因）。
+

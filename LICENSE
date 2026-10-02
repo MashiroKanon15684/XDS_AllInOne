@@ -1,0 +1,43 @@
+MIT License
+
+Copyright (c) 2025 MashiroKanon15684
+
+--------------------------------------------------------------------------
+适用范围说明（IMPORTANT）
+--------------------------------------------------------------------------
+本 MIT 许可仅适用于本仓库中由本项目作者编写的部分，主要包括：
+
+  - src/PowerMeter/PowerMeter.cpp
+  - src/PowerMeter/PowerMeter.h
+  - README.md
+  - SETUP_NOTES.md
+  - XDS_AllInOne.ino（板级/入口部分）
+
+本仓库中其余文件（尤其是 src/ 目录下的 ANT 相关文件，如
+ant_interface.h、ant_parameters.h、ant_event.h、ant_channel_config.*、
+ANTProfile.*、sdant.*、BicyclePower.*、util.h 等）来源于 Nordic
+Semiconductor 的 ANT SDK 及第三方 ANT+ Arduino 项目，其版权与许可
+归各自原作者所有，**不适用**本 MIT 许可。使用这些文件前请自行确认
+并遵守其原始许可条款。
+
+另请注意：ANT / ANT+ 协议仅允许非商业个人用途免费使用；任何商业用途
+均需向 https://www.thisisant.com 购买相应许可。
+--------------------------------------------------------------------------
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
