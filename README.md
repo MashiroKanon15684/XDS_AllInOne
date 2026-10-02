@@ -181,4 +181,5 @@ nRF52840 的 **S140 SoftDevice 原生支持多协议并发**：BLE 外设 + BLE 
 
 > ⚠️ 仅 clone 本仓库**无法直接编译**：还需要按 [`SETUP_NOTES.md`](SETUP_NOTES.md)
 > 安装 ANT 版 BSP，并给 Bluefruit52Lib 打上 CCCD 补丁（这是"连上却收不到数据"的根因）。
+> 请优先给1wpc的项目star，谢谢！！！！！！！
 
