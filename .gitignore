@@ -1,0 +1,30 @@
+# ---- 编译产物 ----
+build/
+*.hex
+*.zip
+*.uf2
+*.elf
+*.map
+*.bin
+*.o
+*.d
+*.a
+
+# ---- Arduino / 编辑器临时文件 ----
+.vscode/
+.idea/
+*.ino.bak
+*~
+
+# ---- 调试日志（本项目调试期间产生，不进版本库）----
+serial-*.txt
+*-bootlog.txt
+*coldboot*.txt
+raw-packets*.txt
+minimal-test-log.txt
+dfu-pin-test.txt
+
+# ---- 系统文件 ----
+Thumbs.db
+Desktop.ini
+.DS_Store
