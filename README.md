@@ -1,9 +1,86 @@
-# XDS All-In-One：用一块 Promicro NRF52840 精简 xds-tutorial 硬件
+# XDS All-In-One
 
-> ⚠️ **重要**：本工程依赖**若干工程代码之外的环境改动**（ANT 版 BSP、Bluefruit 库的
-> CCCD 补丁、RST↔3.3V 硬件短接等）。换新板子、重装开发环境或想复现本项目时，
-> **请先读 [`SETUP_NOTES.md`](SETUP_NOTES.md)** —— 那些改动丢了会重现"收不到数据"、
-> "冷启动不工作"等疑难问题。
+**用一块 nRF52840 让喜德盛（XDS）BLE 功率计直接接入 ANT+ 码表**
+
+把原本需要 **ESP32 + Feather nRF52840 两块板**才能完成的事，合并到**一块 SuperMini NRF52840** 上：
+同时充当 **BLE 主机**（连功率计读数据）与 **ANT+ 主机**（向码表广播功率/踏频）。
+
+[![Board](https://img.shields.io/badge/board-SuperMini%20nRF52840-blue)]()
+[![SoftDevice](https://img.shields.io/badge/SoftDevice-S340%206.1.1-green)]()
+[![License](https://img.shields.io/badge/license-MIT%20(with%20exceptions)-lightgrey)](LICENSE)
+
+---
+
+## 特性
+
+- 🔗 **单板双角色**：BLE Central（连功率计）+ BLE Peripheral（手机桥接）+ ANT+ Master（码表）并发运行
+- 📊 **真实数据**：功率、踏频、曲柄角度、左右腿功率、错误码
+- 🎯 **未连接时一眼可辨**：功率计没连上时，码表显示固定的 **999 W / 250 rpm**（真实骑行不可能持续 999W）
+- 🔌 **断连自动重连**：功率计断开后自动重新扫描
+- 🛠️ **可调试**：115200 串口命令（`status` / `scan` / `disconnect` 等），状态含固件版本标记
+- 📄 **完整踩坑记录**：[`SETUP_NOTES.md`](SETUP_NOTES.md) 记录了全部环境改动与 6 个关键 bug 的定位过程
+
+## 适用场景
+
+喜德盛（XDS）等**只有 BLE、没有 ANT+** 的国产功率计，想要在 **Garmin / XOSS / 迈金等 ANT+ 码表**上直接看功率。
+本项目相当于一个"BLE → ANT+ 协议转换器"。
+
+## 硬件需求
+
+| 项目 | 说明 |
+|---|---|
+| 开发板 | **SuperMini NRF52840**（ProMicro 外形，nice!nano 兼容克隆板） |
+| 软设备 | 必须 **S340**（ANT + BLE 二合一）；官方 BSP 自带的 S140 **不支持 ANT** |
+| 引导器 | **w.ANT** 版（Adafruit Feather nRF52840 Express w.ANT） |
+| 功率计 | 喜德盛（XDS）功率计（BLE 服务 `0x1828` / 特征 `0x2A63`） |
+| 码表 | 任意 ANT+ 码表（本项目用 XOSS NAV 验证） |
+| 供电 | USB 或 3.7V 锂电池（峰值约 15mA） |
+
+> 部分克隆板需要把 **`RST` 与 `3.3V` 短接**（冷启动时复位脚被拉低）。
+> 正常板子无需此操作，详见 [`SETUP_NOTES.md`](SETUP_NOTES.md) 第 1 节。
+
+## 快速开始
+
+```bash
+# 1. 安装 ANT 版 Arduino BSP（基于 Adafruit nRF52 1.7.0）
+#    https://github.com/1wpc/Adafruit_nRF52_Arduino_ANT
+
+# 2. 给 Bluefruit52Lib 打 CCCD 补丁 —— 最关键的步骤！
+#    不打卡片会「连接成功但永远收不到数据」，详见 SETUP_NOTES.md 第 2.2 节
+
+# 3. 用 Arduino IDE 打开本文件夹，开发板选：
+#    Adafruit Bluefruit Feather nRF52840 Express w.ANT
+#    （FQBN: adafruit:nrf52:feather52840_s340）
+
+# 4. 编译并上传（会自动 1200bps touch 进 DFU，无需手动按键）
+arduino-cli compile --fqbn adafruit:nrf52:feather52840_s340 --export-binaries .
+arduino-cli upload  --fqbn adafruit:nrf52:feather52840_s340 -p COM8 .
+```
+
+上电后：打开功率计 → 板子自动连接 → ANT+ 码表搜索功率传感器（**设备号 1000**，通道 57）。
+
+## 数据流
+
+```
+喜德盛功率计 (BLE 0x1828/0x2A63，11 字节通知)
+   │  BLE Central
+   ▼
+SuperMini NRF52840  ──  BLE Peripheral("XDS Power Bridge")  ──►  手机 App
+   │
+   └──  ANT+ Master (4Hz, 2457MHz, 设备号 1000)  ──►  ANT+ 码表
+```
+
+## 文档
+
+| 文件 | 内容 |
+|---|---|
+| [`SETUP_NOTES.md`](SETUP_NOTES.md) | ★ **环境改动、关键补丁、踩坑记录、换新板复现步骤** |
+| [`LICENSE`](LICENSE) | MIT（附第三方文件例外说明） |
+
+> ⚠️ **只 clone 本仓库无法直接编译** —— 还需要 ANT 版 BSP，以及给 Bluefruit52Lib
+> 打上 CCCD 补丁（这是"连上却收不到数据"的根因）。请务必先读 [`SETUP_NOTES.md`](SETUP_NOTES.md)。
+
+---
 
 ## 1. 原方案：两块板子各干了什么
 
